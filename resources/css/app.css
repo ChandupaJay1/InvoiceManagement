@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .admin-card {
+        @apply bg-white overflow-hidden shadow-sm sm:rounded-lg;
+    }
+
+    .stat-card {
+        @apply admin-card p-6;
+    }
+
+    .stat-label {
+        @apply text-gray-500 text-sm uppercase font-bold tracking-wider;
+    }
+
+    .stat-value {
+        @apply text-3xl font-extrabold mt-2;
+    }
+
+    .btn {
+        @apply inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 transition ease-in-out duration-150;
+    }
+
+    .btn-indigo {
+        @apply btn bg-indigo-600 hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:ring-indigo-500;
+    }
+
+    .btn-purple {
+        @apply btn bg-purple-600 hover:bg-purple-700 focus:bg-purple-700 active:bg-purple-900 focus:ring-purple-500;
+    }
+
+    .btn-blue {
+        @apply btn bg-blue-600 hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:ring-blue-500;
+    }
+
+    .btn-gray {
+        @apply btn bg-gray-800 hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:ring-indigo-500;
+    }
+
+    .btn-red {
+        @apply btn bg-red-600 hover:bg-red-700 focus:bg-red-700 active:bg-red-900 focus:ring-red-500;
+    }
+
+    .form-input {
+        @apply block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:border-indigo-500 focus:ring-indigo-500;
+    }
+}
