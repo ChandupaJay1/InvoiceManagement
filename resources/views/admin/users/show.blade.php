@@ -1,13 +1,15 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('User Details: ') . $user->name }}
-            </h2>
-            <a href="{{ route('admin.backup', ['user_id' => $user->id]) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                Backup User Data
-            </a>
-        </div>
+        <x-page-header 
+            title="User Details: {{ $user->name }}" 
+            :backUrl="route('admin.users.index')"
+            subtitle="Invoices and performance analysis">
+            <x-slot name="actions">
+                <a href="{{ route('admin.backup', ['user_id' => $user->id]) }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 transition ease-in-out duration-150 shadow-sm">
+                    Backup User Data
+                </a>
+            </x-slot>
+        </x-page-header>
     </x-slot>
 
     <div class="py-12">
@@ -49,6 +51,7 @@
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice #</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stoles</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                                     </tr>
@@ -58,6 +61,17 @@
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $invoice->invoice_number }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $invoice->invoice_date->format('Y-m-d') }}</td>
+                                            <td class="px-6 py-4 text-sm">
+                                                <div class="flex flex-wrap gap-1">
+                                                    @if($invoice->stoles)
+                                                        @foreach(explode(', ', $invoice->stoles) as $stole)
+                                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                                                                {{ $stole }}
+                                                            </span>
+                                                        @endforeach
+                                                    @endif
+                                                </div>
+                                            </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $invoice->customer_name }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($invoice->total, 2) }}</td>
                                         </tr>

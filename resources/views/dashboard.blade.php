@@ -1,9 +1,12 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
-            <p class="text-gray-600">Welcome back, {{ Auth::user()->name }}</p>
-        </div>
+    <x-slot name="header">
+        <x-page-header 
+            title="Dashboard" 
+            subtitle="Welcome back, {{ Auth::user()->name }}" />
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -114,5 +117,6 @@
                 </a>
             </div>
         @endif
+    </div>
     </div>
 </x-app-layout>

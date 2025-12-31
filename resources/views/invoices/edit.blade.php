@@ -1,32 +1,33 @@
 <x-app-layout>
     <x-slot name="header">
         <x-page-header 
-            title="Create New Invoice" 
-            :backUrl="route('invoices.index')"
-            subtitle="Fill in the details to generate a new invoice" />
+            title="Edit Invoice" 
+            :backUrl="route('invoices.show', $invoice)"
+            subtitle="Modifying Invoice #{{ $invoice->invoice_number }}" />
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 border-b border-gray-200">
-                    <form method="POST" action="{{ route('invoices.store') }}" id="invoiceForm">
+                    <form method="POST" action="{{ route('invoices.update', $invoice) }}" id="invoiceForm">
                         @csrf
+                        @method('PUT')
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                             <div>
-                                <label for="customer_name" class="block font-medium text-sm text-gray-700">Customer Name (නම)*</label>
-                                <input type="text" name="customer_name" id="customer_name" value="{{ old('customer_name') }}" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                <label for="customer_name" class="block font-medium text-sm text-gray-700">Customer Name*</label>
+                                <input type="text" name="customer_name" id="customer_name" value="{{ old('customer_name', $invoice->customer_name) }}" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                             </div>
 
                             <div>
-                                <label for="customer_contact" class="block font-medium text-sm text-gray-700">Contact (දුරකථන අංකය)*</label>
-                                <input type="text" name="customer_contact" id="customer_contact" value="{{ old('customer_contact') }}" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                <label for="customer_contact" class="block font-medium text-sm text-gray-700">Contact*</label>
+                                <input type="text" name="customer_contact" id="customer_contact" value="{{ old('customer_contact', $invoice->customer_contact) }}" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                             </div>
 
                             <div>
-                                <label for="invoice_date" class="block font-medium text-sm text-gray-700">Invoice Date (දිනය)*</label>
-                                <input type="date" name="invoice_date" id="invoice_date" value="{{ old('invoice_date', $date) }}" onchange="refreshTakenStoles()" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                <label for="invoice_date" class="block font-medium text-sm text-gray-700">Invoice Date*</label>
+                                <input type="date" name="invoice_date" id="invoice_date" value="{{ old('invoice_date', $invoice->invoice_date->format('Y-m-d')) }}" onchange="refreshTakenStoles()" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                             </div>
                         </div>
 
@@ -80,16 +81,19 @@
 
                                     <div class="overflow-y-auto max-h-[320px] p-1" style="display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px;">
                                         @for ($i = 1; $i <= 100; $i++)
-                                            @php $isTaken = in_array((string)$i, $takenStoles); @endphp
+                                            @php 
+                                                $isTakenByOthers = in_array((string)$i, $takenStoles); 
+                                                $isCurrentlySelected = $invoice->items->contains('place', (string)$i);
+                                            @endphp
                                             <button type="button" 
                                                     id="stole-btn-{{ $i }}" 
                                                     x-show="(page === 1 && {{ $i }} <= 50) || (page === 2 && {{ $i }} > 50)"
                                                     @click="toggle({{ $i }})"
-                                                    {{ $isTaken ? 'disabled' : '' }}
+                                                    {{ $isTakenByOthers ? 'disabled' : '' }}
                                                     class="w-10 h-10 flex items-center justify-center text-sm font-bold rounded-lg transition-all duration-200 border"
                                                     :class="selected.includes({{ $i }}) 
                                                         ? 'bg-indigo-600 text-white border-indigo-600 scale-105 shadow-md' 
-                                                        : ({{ $isTaken ? 'true' : 'false' }} 
+                                                        : ({{ $isTakenByOthers ? 'true' : 'false' }} 
                                                             ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-100' 
                                                             : 'bg-white border-gray-200 text-gray-700 hover:border-indigo-400 hover:bg-indigo-50')">
                                                 {{ $i }}
@@ -141,7 +145,24 @@
                                         </tr>
                                     </thead>
                                     <tbody id="itemsContainer" class="bg-white divide-y divide-gray-200">
-                                        <!-- Dynamic Rows -->
+                                        @foreach($invoice->items as $index => $item)
+                                        <tr id="row-stole-{{ $item->place }}" class="item-row">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                <input type="hidden" name="items[{{ $index }}][place]" value="{{ $item->place }}">
+                                                Stole {{ $item->place }}
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <input type="number" name="items[{{ $index }}][quantity]" value="{{ $item->quantity }}" min="1" required class="w-20 rounded-md border-gray-300" onchange="calculateTotal()">
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <input type="number" name="items[{{ $index }}][price]" value="{{ $item->price }}" min="0" step="0.01" required class="w-32 rounded-md border-gray-300" onchange="calculateTotal()">
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">$<span class="subtotal">{{ number_format($item->subtotal, 2, '.', '') }}</span></td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                <button type="button" onclick="toggleStole({{ $item->place }})" class="text-red-600 hover:text-red-900">Remove</button>
+                                            </td>
+                                        </tr>
+                                        @endforeach
                                     </tbody>
                                     <tfoot>
                                         <tr class="bg-gray-50 font-bold">
@@ -155,8 +176,8 @@
                         </div>
 
                         <div class="flex justify-end gap-3">
-                            <a href="{{ route('invoices.index') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50">Cancel</a>
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">Create Invoice</button>
+                            <a href="{{ route('invoices.show', $invoice) }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50">Cancel</a>
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700">Update Invoice</button>
                         </div>
                     </form>
                 </div>
@@ -166,15 +187,15 @@
 
     <script>
         let takenStoles = @json($takenStoles).map(s => String(s));
-        let selectedStoles = new Set();
-        let rowIndex = 0;
+        let selectedStoles = new Set(@json($invoice->items->pluck('place')).map(s => parseInt(s)));
+        let rowIndex = {{ $invoice->items->count() }};
 
         async function refreshTakenStoles() {
             const date = document.getElementById('invoice_date').value;
             if (!date) return;
 
             try {
-                const response = await fetch(`{{ route('invoices.stoles.taken') }}?date=${date}`);
+                const response = await fetch(`{{ route('invoices.stoles.taken') }}?date=${date}&exclude_invoice_id={{ $invoice->id }}`);
                 takenStoles = (await response.json()).map(s => String(s));
                 
                 for (let i = 1; i <= 100; i++) {
@@ -187,11 +208,12 @@
                     
                     if (isTaken) {
                         btn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
-                        if (isSelected) toggleStole(i);
+                        btn.classList.add('bg-gray-100', 'text-gray-400', 'cursor-not-allowed', 'border', 'border-gray-100');
+                        if (isSelected) toggleStole(i); // If a selected stole becomes taken, deselect it
                     } else if (isSelected) {
-                        btn.classList.add('bg-indigo-600', 'text-white');
+                        btn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600', 'scale-105', 'shadow-md');
                     } else {
-                        btn.classList.add('bg-white', 'border', 'border-gray-300', 'text-gray-700', 'hover:bg-indigo-50');
+                        btn.classList.add('bg-white', 'border', 'border-gray-200', 'text-gray-700', 'hover:border-indigo-400', 'hover:bg-indigo-50');
                     }
                 }
                 window.dispatchEvent(new CustomEvent('refresh-stoles'));
@@ -201,21 +223,20 @@
         }
 
         function toggleStole(id) {
-            // Note: In the new UI, Alpine handles visuals, but we still need the underlying logic
-            // for the items table and form data.
+            // No need to check btn.disabled here, Alpine's :disabled handles it
+            // and the logic below ensures taken stoles aren't added.
             
             if (selectedStoles.has(id)) {
-                // Standard toggle logic:
                 selectedStoles.delete(id);
                 const row = document.getElementById(`row-stole-${id}`);
                 if (row) row.remove();
             } else {
-                if (takenStoles.includes(String(id))) return;
+                if (takenStoles.includes(String(id))) return; // Prevent adding if taken
                 selectedStoles.add(id);
                 addRow(id);
             }
             calculateTotal();
-            window.dispatchEvent(new CustomEvent('refresh-stoles'));
+            window.dispatchEvent(new CustomEvent('refresh-stoles')); // Notify Alpine to update selected badges
         }
 
         function addRow(stoleId) {
@@ -247,13 +268,20 @@
             const rows = document.querySelectorAll('.item-row');
             let total = 0;
             rows.forEach(row => {
-                const qty = parseFloat(row.querySelector('input[name*="[quantity]"]').value) || 0;
-                const price = parseFloat(row.querySelector('input[name*="[price]"]').value) || 0;
+                const qtyInput = row.querySelector('input[name*="[quantity]"]');
+                const priceInput = row.querySelector('input[name*="[price]"]');
+                const qty = parseFloat(qtyInput.value) || 0;
+                const price = parseFloat(priceInput.value) || 0;
                 const subtotal = qty * price;
                 row.querySelector('.subtotal').textContent = subtotal.toFixed(2);
                 total += subtotal;
             });
             document.getElementById('totalAmount').textContent = total.toFixed(2);
         }
+
+        // Initialize total on load
+        document.addEventListener('DOMContentLoaded', () => {
+            calculateTotal();
+        });
     </script>
 </x-app-layout>
