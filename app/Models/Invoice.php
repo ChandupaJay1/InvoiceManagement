@@ -17,6 +17,7 @@ class Invoice extends Model
         'customer_name',
         'customer_contact',
         'invoice_date',
+        'stoles',
         'total',
     ];
 

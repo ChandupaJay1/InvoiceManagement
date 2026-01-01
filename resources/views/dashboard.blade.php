@@ -1,9 +1,12 @@
 <x-app-layout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
-            <p class="text-gray-600">Welcome back, {{ Auth::user()->name }}</p>
-        </div>
+    <x-slot name="header">
+        <x-page-header 
+            title="Dashboard" 
+            subtitle="Welcome back, {{ Auth::user()->name }}" />
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
         <!-- Stats Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -15,7 +18,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                     </svg>
                 </div>
-                <p class="text-3xl font-bold text-gray-800">${{ number_format($dailySales, 2) }}</p>
+                <p class="text-3xl font-bold text-gray-800">Rs.{{ number_format($dailySales, 2) }}</p>
                 <p class="text-sm text-gray-500 mt-2">{{ now()->format('F d, Y') }}</p>
             </div>
 
@@ -27,7 +30,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <p class="text-3xl font-bold text-gray-800">${{ number_format($monthlySales, 2) }}</p>
+                <p class="text-3xl font-bold text-gray-800">Rs.{{ number_format($monthlySales, 2) }}</p>
                 <p class="text-sm text-gray-500 mt-2">{{ now()->format('F Y') }}</p>
             </div>
 
@@ -92,7 +95,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-sm text-gray-800">{{ $invoice->customer_name }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-600">{{ $invoice->invoice_date->format('M d, Y') }}</td>
-                                <td class="px-4 py-3 text-sm font-medium text-gray-800">${{ number_format($invoice->total, 2) }}</td>
+                                <td class="px-4 py-3 text-sm font-medium text-gray-800">Rs.{{ number_format($invoice->total, 2) }}</td>
                                 <td class="px-4 py-3 text-sm">
                                     <a href="{{ route('invoices.show', $invoice) }}" class="text-indigo-600 hover:text-indigo-800 font-medium">View</a>
                                 </td>
@@ -114,5 +117,6 @@
                 </a>
             </div>
         @endif
+    </div>
     </div>
 </x-app-layout>

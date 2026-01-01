@@ -11,6 +11,8 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+use Illuminate\Validation\Rule;
+
 class InvoiceController extends Controller
 {
     public function index(): View
@@ -24,9 +26,14 @@ class InvoiceController extends Controller
         return view('invoices.index', compact('invoices'));
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('invoices.create');
+        $date = $request->get('date', now()->format('Y-m-d'));
+        $takenStoles = InvoiceItem::whereHas('invoice', function($query) use ($date) {
+            $query->whereDate('invoice_date', $date);
+        })->pluck('place')->toArray();
+
+        return view('invoices.create', compact('takenStoles', 'date'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -36,8 +43,23 @@ class InvoiceController extends Controller
             'customer_contact' => 'required|string|max:255',
             'invoice_date' => 'required|date',
             'items' => 'required|array|min:1',
-            'items.*.place' => 'required|string|max:255',
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.place' => [
+                'required',
+                'string',
+                'max:255',
+                'distinct',
+                function ($attribute, $value, $fail) use ($request) {
+                    $exists = InvoiceItem::where('place', $value)
+                        ->whereHas('invoice', function ($query) use ($request) {
+                            $query->whereDate('invoice_date', $request->invoice_date);
+                        })->exists();
+
+                    if ($exists) {
+                        $fail("The stole {$value} is already taken for this date.");
+                    }
+                },
+            ],
+            // 'items.*.quantity' => 'required|integer|min:1', // Removed
             'items.*.price' => 'required|numeric|min:0',
         ]);
 
@@ -47,8 +69,11 @@ class InvoiceController extends Controller
             // Calculate total
             $total = 0;
             foreach ($validated['items'] as $item) {
-                $total += $item['quantity'] * $item['price'];
+                $total += $item['price']; // Quantity is assumed 1
             }
+
+            // Collect all stole numbers
+            $stoleNumbers = collect($validated['items'])->pluck('place')->sort()->implode(', ');
 
             // Create invoice
             $invoice = Invoice::create([
@@ -57,6 +82,7 @@ class InvoiceController extends Controller
                 'customer_name' => $validated['customer_name'],
                 'customer_contact' => $validated['customer_contact'],
                 'invoice_date' => $validated['invoice_date'],
+                'stoles' => $stoleNumbers,
                 'total' => $total,
             ]);
 
@@ -65,9 +91,9 @@ class InvoiceController extends Controller
                 InvoiceItem::create([
                     'invoice_id' => $invoice->id,
                     'place' => $item['place'],
-                    'quantity' => $item['quantity'],
+                    // 'quantity' => $item['quantity'], // Removed
                     'price' => $item['price'],
-                    'subtotal' => $item['quantity'] * $item['price'],
+                    'subtotal' => $item['price'], // Quantity is 1
                 ]);
             }
 
@@ -96,6 +122,121 @@ class InvoiceController extends Controller
         $invoice->load('items');
 
         return view('invoices.show', compact('invoice'));
+    }
+
+    public function edit(Invoice $invoice): View
+    {
+        if ($invoice->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $invoice->load('items');
+        $date = $invoice->invoice_date->format('Y-m-d');
+
+        $takenStoles = InvoiceItem::whereHas('invoice', function($query) use ($date) {
+            $query->whereDate('invoice_date', $date);
+        })->where('invoice_id', '!=', $invoice->id)
+          ->pluck('place')->toArray();
+
+        return view('invoices.edit', compact('invoice', 'takenStoles', 'date'));
+    }
+
+    public function getTakenStoles(Request $request)
+    {
+        $date = $request->get('date');
+        $excludeId = $request->get('exclude_invoice_id');
+
+        $query = InvoiceItem::whereHas('invoice', function($q) use ($date) {
+            $q->whereDate('invoice_date', $date);
+        });
+
+        if ($excludeId) {
+            $query->where('invoice_id', '!=', $excludeId);
+        }
+
+        return response()->json($query->pluck('place')->toArray());
+    }
+
+    public function update(Request $request, Invoice $invoice): RedirectResponse
+    {
+        if ($invoice->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_contact' => 'required|string|max:255',
+            'invoice_date' => 'required|date',
+            'items' => 'required|array|min:1',
+            'items.*.place' => [
+                'required',
+                'string',
+                'max:255',
+                'distinct',
+                function ($attribute, $value, $fail) use ($request, $invoice) {
+                    $exists = InvoiceItem::where('place', $value)
+                        ->where('invoice_id', '!=', $invoice->id)
+                        ->whereHas('invoice', function ($query) use ($request) {
+                            $query->whereDate('invoice_date', $request->invoice_date);
+                        })->exists();
+
+                    if ($exists) {
+                        $fail("The stole {$value} is already taken for this date.");
+                    }
+                },
+            ],
+            // 'items.*.quantity' => 'required|integer|min:1', // Removed
+            'items.*.price' => 'required|numeric|min:0',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            // Calculate total
+            $total = 0;
+            foreach ($validated['items'] as $item) {
+                $total += $item['price']; // Quantity is assumed 1
+            }
+
+            // Collect all stole numbers
+            $stoleNumbers = collect($validated['items'])->pluck('place')->sort()->implode(', ');
+
+            // Update invoice
+            $invoice->update([
+                'customer_name' => $validated['customer_name'],
+                'customer_contact' => $validated['customer_contact'],
+                'invoice_date' => $validated['invoice_date'],
+                'stoles' => $stoleNumbers,
+                'total' => $total,
+            ]);
+
+            // Sync items (delete all and recreate is simplest safe approach for now)
+            // A more optimized approach would be diffing, but we want simplicity and correctness.
+            $invoice->items()->delete();
+
+            foreach ($validated['items'] as $item) {
+                InvoiceItem::create([
+                    'invoice_id' => $invoice->id,
+                    'place' => $item['place'],
+                    // 'quantity' => $item['quantity'], // Removed
+                    'price' => $item['price'],
+                    'subtotal' => $item['price'], // Quantity is 1
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()
+                ->route('invoices.show', $invoice)
+                ->with('success', 'Invoice updated successfully!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to update invoice. Please try again.');
+        }
     }
 
     public function destroy(Invoice $invoice): RedirectResponse

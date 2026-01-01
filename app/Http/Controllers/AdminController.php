@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminController extends Controller
@@ -14,19 +15,123 @@ class AdminController extends Controller
     {
         $totalUsers = User::count();
         $totalInvoices = Invoice::count();
+        $totalStoles = \App\Models\InvoiceItem::count();
+        $totalCapacity = 100;
         $totalCollection = Invoice::sum('total');
 
-        return view('admin.dashboard', compact('totalUsers', 'totalInvoices', 'totalCollection'));
+        return view('admin.dashboard', compact('totalUsers', 'totalInvoices', 'totalStoles', 'totalCapacity', 'totalCollection'));
+    }
+
+    public function collections()
+    {
+        $users = User::where('is_admin', false)
+            ->withCount('invoices')
+            ->get()
+            ->map(function($user) {
+                $user->today_total = Invoice::where('user_id', $user->id)
+                    ->whereDate('invoice_date', today())
+                    ->sum('total');
+                $user->month_total = Invoice::where('user_id', $user->id)
+                    ->whereMonth('invoice_date', now()->month)
+                    ->whereYear('invoice_date', now()->year)
+                    ->sum('total');
+                $user->lifetime_total = Invoice::where('user_id', $user->id)
+                    ->sum('total');
+                return $user;
+            });
+
+        return view('admin.collections.index', compact('users'));
     }
 
     public function users()
     {
-        $users = User::where('is_admin', false)
+        $users = User::latest()
             ->withCount('invoices')
             ->withSum('invoices', 'total')
-            ->paginate(10);
+            ->paginate(15);
 
         return view('admin.users.index', compact('users'));
+    }
+
+    public function createUser()
+    {
+        return view('admin.users.create');
+    }
+
+    public function storeUser(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'is_admin' => 'required|boolean',
+            'is_active' => 'required|boolean',
+        ]);
+
+        User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+            'is_admin' => $validated['is_admin'],
+            'is_active' => $validated['is_active'],
+        ]);
+
+        return redirect()->route('admin.users.index')->with('success', 'User created successfully!');
+    }
+
+    public function editUser(User $user)
+    {
+        return view('admin.users.edit', compact('user'));
+    }
+
+    public function updateUser(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
+            'is_admin' => 'required|boolean',
+            'is_active' => 'required|boolean',
+        ]);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->is_admin = $validated['is_admin'];
+        $user->is_active = $validated['is_active'];
+        
+        if ($request->filled('password')) {
+            $user->password = bcrypt($validated['password']);
+        }
+
+        $user->save();
+
+        return redirect()->route('admin.users.index')->with('success', 'User updated successfully!');
+    }
+
+    public function toggleStatus(User $user)
+    {
+        if ($user->id === Auth::id()) {
+            return back()->with('error', 'You cannot disable your own account.');
+        }
+
+        $user->is_active = !$user->is_active;
+        $user->save();
+
+        $status = $user->is_active ? 'enabled' : 'disabled';
+        return back()->with('success', "User account has been $status.");
+    }
+
+    public function deleteUser(User $user)
+    {
+        if ($user->id === Auth::id()) {
+            return back()->with('error', 'You cannot delete yourself.');
+        }
+
+        // Optional: delete or reassign user's invoices
+        $user->invoices()->delete();
+        $user->delete();
+
+        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully!');
     }
 
     public function userInvoices(User $user)
@@ -168,10 +273,18 @@ class AdminController extends Controller
         }
     }
 
-    public function allInvoices()
+    public function allInvoices(Request $request)
     {
-        $invoices = Invoice::with('user')->latest()->paginate(20);
-        return view('admin.invoices.index', compact('invoices'));
+        $query = Invoice::with('user');
+
+        if ($request->has('user_id') && $request->user_id) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        $invoices = $query->latest()->paginate(20);
+        $users = User::where('is_admin', false)->orderBy('name')->get();
+
+        return view('admin.invoices.index', compact('invoices', 'users'));
     }
 
     public function monthlyReport()
