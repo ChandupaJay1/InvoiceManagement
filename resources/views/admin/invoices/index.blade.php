@@ -78,7 +78,7 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($invoice->total, 2) }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rs.{{ number_format($invoice->total, 2) }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <a href="{{ route('admin.users.show', $invoice->user) }}" class="text-gray-600 hover:text-gray-900">View History</a>
                                         </td>

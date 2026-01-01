@@ -19,14 +19,14 @@
                 <!-- Daily Sales -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <div class="text-gray-500 text-sm uppercase font-bold tracking-wider">Daily Sales</div>
-                    <div class="text-3xl font-extrabold text-indigo-600 mt-2">${{ number_format($dailySales, 2) }}</div>
+                    <div class="text-3xl font-extrabold text-indigo-600 mt-2">Rs.{{ number_format($dailySales, 2) }}</div>
                     <div class="text-sm text-gray-400 mt-1">{{ now()->format('F d, Y') }}</div>
                 </div>
 
                 <!-- Monthly Sales -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                     <div class="text-gray-500 text-sm uppercase font-bold tracking-wider">Monthly Sales</div>
-                    <div class="text-3xl font-extrabold text-green-600 mt-2">${{ number_format($monthlySales, 2) }}</div>
+                    <div class="text-3xl font-extrabold text-green-600 mt-2">Rs.{{ number_format($monthlySales, 2) }}</div>
                     <div class="text-sm text-gray-400 mt-1">{{ now()->format('F Y') }}</div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                         <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
                             <h3 class="text-lg font-bold text-gray-800">{{ $month }}</h3>
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                Total: ${{ number_format($monthTotal, 2) }}
+                                Total: Rs.{{ number_format($monthTotal, 2) }}
                             </span>
                         </div>
                         <div class="p-6 text-gray-900">
@@ -73,7 +73,7 @@
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $invoice->customer_name }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($invoice->total, 2) }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rs.{{ number_format($invoice->total, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

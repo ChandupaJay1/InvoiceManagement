@@ -7,7 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
                 <!-- Total Users -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200">
                     <div class="text-gray-500 text-sm font-medium uppercase">Total Users</div>
@@ -20,10 +20,16 @@
                     <div class="text-3xl font-bold text-green-600 mt-2">{{ $totalInvoices }}</div>
                 </div>
 
+                <!-- Total Stoles -->
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200">
+                    <div class="text-gray-500 text-sm font-medium uppercase">Stoles (Total / Payed)</div>
+                    <div class="text-3xl font-bold text-purple-600 mt-2">{{ $totalCapacity }} / {{ $totalStoles }}</div>
+                </div>
+
                 <!-- Total Collection -->
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border border-gray-200">
                     <div class="text-gray-500 text-sm font-medium uppercase">Total Collection</div>
-                    <div class="text-3xl font-bold text-blue-600 mt-2">${{ number_format($totalCollection, 2) }}</div>
+                    <div class="text-3xl font-bold text-blue-600 mt-2">Rs.{{ number_format($totalCollection, 2) }}</div>
                 </div>
             </div>
 

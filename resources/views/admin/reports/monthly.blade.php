@@ -24,7 +24,7 @@
                         <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
                             <h3 class="text-lg font-bold text-gray-800">{{ $dateObj->format('F Y') }}</h3>
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                Month Total: ${{ number_format($monthTotal, 2) }}
+                                Month Total: Rs.{{ number_format($monthTotal, 2) }}
                             </span>
                         </div>
                         <div class="p-6 text-gray-900">
@@ -48,7 +48,7 @@
                                                     {{ $stat->invoice_count }}
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600">
-                                                    ${{ number_format($stat->total_amount, 2) }}
+                                                    Rs.{{ number_format($stat->total_amount, 2) }}
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                     @if($stat->user)

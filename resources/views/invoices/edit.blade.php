@@ -138,7 +138,7 @@
                                     <thead class="bg-gray-50">
                                         <tr>
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stole</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
+                                            {{-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th> --}}
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subtotal</th>
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"></th>
@@ -151,13 +151,13 @@
                                                 <input type="hidden" name="items[{{ $index }}][place]" value="{{ $item->place }}">
                                                 Stole {{ $item->place }}
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 <input type="number" name="items[{{ $index }}][quantity]" value="{{ $item->quantity }}" min="1" required class="w-20 rounded-md border-gray-300" onchange="calculateTotal()">
-                                            </td>
+                                            </td> --}}
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 <input type="number" name="items[{{ $index }}][price]" value="{{ $item->price }}" min="0" step="0.01" required class="w-32 rounded-md border-gray-300" onchange="calculateTotal()">
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">$<span class="subtotal">{{ number_format($item->subtotal, 2, '.', '') }}</span></td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">Rs.<span class="subtotal">{{ number_format($item->subtotal, 2, '.', '') }}</span></td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <button type="button" onclick="toggleStole({{ $item->place }})" class="text-red-600 hover:text-red-900">Remove</button>
                                             </td>
@@ -166,8 +166,8 @@
                                     </tbody>
                                     <tfoot>
                                         <tr class="bg-gray-50 font-bold">
-                                            <td colspan="3" class="px-6 py-4 text-right">Total:</td>
-                                            <td class="px-6 py-4">$<span id="totalAmount">0.00</span></td>
+                                            <td colspan="2" class="px-6 py-4 text-right">Total:</td>
+                                            <td class="px-6 py-4">Rs.<span id="totalAmount">0.00</span></td>
                                             <td></td>
                                         </tr>
                                     </tfoot>
@@ -249,9 +249,9 @@
                     <input type="hidden" name="items[${rowIndex}][place]" value="${stoleId}">
                     Stole ${stoleId}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <input type="number" name="items[${rowIndex}][quantity]" value="1" min="1" required class="w-20 rounded-md border-gray-300" onchange="calculateTotal()">
-                </td>
+                </td> --}}
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <input type="number" name="items[${rowIndex}][price]" value="0" min="0" step="0.01" required class="w-32 rounded-md border-gray-300" onchange="calculateTotal()">
                 </td>
@@ -268,11 +268,11 @@
             const rows = document.querySelectorAll('.item-row');
             let total = 0;
             rows.forEach(row => {
-                const qtyInput = row.querySelector('input[name*="[quantity]"]');
+                // const qtyInput = row.querySelector('input[name*="[quantity]"]');
                 const priceInput = row.querySelector('input[name*="[price]"]');
-                const qty = parseFloat(qtyInput.value) || 0;
+                // const qty = parseFloat(qtyInput.value) || 0;
                 const price = parseFloat(priceInput.value) || 0;
-                const subtotal = qty * price;
+                const subtotal = price; // qty assumed 1
                 row.querySelector('.subtotal').textContent = subtotal.toFixed(2);
                 total += subtotal;
             });

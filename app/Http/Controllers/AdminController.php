@@ -15,9 +15,11 @@ class AdminController extends Controller
     {
         $totalUsers = User::count();
         $totalInvoices = Invoice::count();
+        $totalStoles = \App\Models\InvoiceItem::count();
+        $totalCapacity = 100;
         $totalCollection = Invoice::sum('total');
 
-        return view('admin.dashboard', compact('totalUsers', 'totalInvoices', 'totalCollection'));
+        return view('admin.dashboard', compact('totalUsers', 'totalInvoices', 'totalStoles', 'totalCapacity', 'totalCollection'));
     }
 
     public function collections()

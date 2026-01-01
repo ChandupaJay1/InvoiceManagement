@@ -16,11 +16,11 @@
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <p class="text-sm font-bold text-gray-400 uppercase tracking-widest">Today's Grand Total</p>
-                    <p class="text-3xl font-extrabold text-green-600 mt-2">${{ number_format($users->sum('today_total'), 2) }}</p>
+                    <p class="text-3xl font-extrabold text-green-600 mt-2">Rs.{{ number_format($users->sum('today_total'), 2) }}</p>
                 </div>
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                     <p class="text-sm font-bold text-gray-400 uppercase tracking-widest">Monthly Grand Total</p>
-                    <p class="text-3xl font-extrabold text-blue-600 mt-2">${{ number_format($users->sum('month_total'), 2) }}</p>
+                    <p class="text-3xl font-extrabold text-blue-600 mt-2">Rs.{{ number_format($users->sum('month_total'), 2) }}</p>
                 </div>
             </div>
 
@@ -51,13 +51,13 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-4 text-right text-sm font-bold text-green-600">
-                                            ${{ number_format($user->today_total, 2) }}
+                                            Rs.{{ number_format($user->today_total, 2) }}
                                         </td>
                                         <td class="px-6 py-4 text-right text-sm font-bold text-blue-600">
-                                            ${{ number_format($user->month_total, 2) }}
+                                            Rs.{{ number_format($user->month_total, 2) }}
                                         </td>
                                         <td class="px-6 py-4 text-right text-sm font-bold text-indigo-600">
-                                            ${{ number_format($user->lifetime_total, 2) }}
+                                            Rs.{{ number_format($user->lifetime_total, 2) }}
                                         </td>
                                         <td class="px-6 py-4 text-right">
                                             <a href="{{ route('admin.users.show', $user) }}" class="inline-flex items-center text-xs font-bold uppercase tracking-widest text-indigo-600 hover:text-indigo-900 transition-colors">

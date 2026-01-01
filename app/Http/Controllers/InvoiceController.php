@@ -59,7 +59,7 @@ class InvoiceController extends Controller
                     }
                 },
             ],
-            'items.*.quantity' => 'required|integer|min:1',
+            // 'items.*.quantity' => 'required|integer|min:1', // Removed
             'items.*.price' => 'required|numeric|min:0',
         ]);
 
@@ -69,7 +69,7 @@ class InvoiceController extends Controller
             // Calculate total
             $total = 0;
             foreach ($validated['items'] as $item) {
-                $total += $item['quantity'] * $item['price'];
+                $total += $item['price']; // Quantity is assumed 1
             }
 
             // Collect all stole numbers
@@ -91,9 +91,9 @@ class InvoiceController extends Controller
                 InvoiceItem::create([
                     'invoice_id' => $invoice->id,
                     'place' => $item['place'],
-                    'quantity' => $item['quantity'],
+                    // 'quantity' => $item['quantity'], // Removed
                     'price' => $item['price'],
-                    'subtotal' => $item['quantity'] * $item['price'],
+                    'subtotal' => $item['price'], // Quantity is 1
                 ]);
             }
 
@@ -185,7 +185,7 @@ class InvoiceController extends Controller
                     }
                 },
             ],
-            'items.*.quantity' => 'required|integer|min:1',
+            // 'items.*.quantity' => 'required|integer|min:1', // Removed
             'items.*.price' => 'required|numeric|min:0',
         ]);
 
@@ -195,7 +195,7 @@ class InvoiceController extends Controller
             // Calculate total
             $total = 0;
             foreach ($validated['items'] as $item) {
-                $total += $item['quantity'] * $item['price'];
+                $total += $item['price']; // Quantity is assumed 1
             }
 
             // Collect all stole numbers
@@ -218,9 +218,9 @@ class InvoiceController extends Controller
                 InvoiceItem::create([
                     'invoice_id' => $invoice->id,
                     'place' => $item['place'],
-                    'quantity' => $item['quantity'],
+                    // 'quantity' => $item['quantity'], // Removed
                     'price' => $item['price'],
-                    'subtotal' => $item['quantity'] * $item['price'],
+                    'subtotal' => $item['price'], // Quantity is 1
                 ]);
             }
 

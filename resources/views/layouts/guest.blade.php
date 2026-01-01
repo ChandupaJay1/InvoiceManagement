@@ -44,7 +44,7 @@
             <div class="w-full sm:max-w-md mt-6 px-8 py-8 glass-effect shadow-2xl overflow-hidden sm:rounded-2xl transform transition-all hover:scale-[1.01] duration-300">
                 <div class="flex justify-center mb-6">
                     <a href="/" class="transition-transform duration-300 hover:scale-110">
-                        <x-application-logo class="w-24 h-24 fill-current text-indigo-600" />
+                        <img src="{{ asset('icon.png') }}" alt="Application Logo" class="w-24 h-24" />
                     </a>
                 </div>
                 {{ $slot }}

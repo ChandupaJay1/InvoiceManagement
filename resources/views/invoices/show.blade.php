@@ -154,17 +154,17 @@
                         <table class="min-w-full divide-y divide-gray-200 print:divide-y-0">
                             <thead class="bg-gray-50 print:bg-white">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase print:text-black print:px-0">ITEM</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase print:text-black print:px-0 print:text-center">QTY</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase print:text-black print:px-0">PRICE</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase print:text-black print:px-0">TOTAL</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase print:text-black print:px-0">කඩ අංකය</th>
+                                    {{-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase print:text-black print:px-0 print:text-center">QTY</th> --}}
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase print:text-black print:px-0">මිල</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase print:text-black print:px-0">මුදල</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 print:divide-y-0">
                                 @foreach($invoice->items as $item)
                                     <tr class="print:border-b print:border-dashed print:border-gray-800">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 print:px-0 print:text-xs">Stole {{ $item->place }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 print:px-0 print:text-xs print:text-center">{{ $item->quantity }}</td>
+                                        {{-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 print:px-0 print:text-xs print:text-center">{{ $item->quantity }}</td> --}}
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right font-medium print:px-0 print:text-xs">${{ number_format($item->price, 2) }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-bold print:px-0 print:text-xs">${{ number_format($item->subtotal, 2) }}</td>
                                     </tr>
@@ -173,7 +173,7 @@
                             <tfoot>
                                 <!-- Subtotal & Tax Row -->
                                 <tr class="bg-indigo-50/50 print:bg-white border-t border-indigo-100 print:border-t-0">
-                                    <td colspan="3" class="px-6 py-2 text-right text-gray-500 uppercase tracking-widest text-[10px] print:text-gray-500 print:px-0 print:font-bold">SUBTOTAL</td>
+                                    <td colspan="2" class="px-6 py-2 text-right text-gray-500 uppercase tracking-widest text-[10px] print:text-gray-500 print:px-0 print:font-bold">මුළු මුදල</td>
                                     <td class="px-6 py-2 text-right text-sm font-bold text-gray-900 print:text-black print:px-0">${{ number_format($invoice->total, 2) }}</td>
                                 </tr>
                                 <!-- Tax row removed as requested -->
@@ -185,8 +185,8 @@
                                 --}}
                                 <!-- Grand Total Row -->
                                 <tr class="border-t-2 border-gray-900 print:border-black print:border-dashed total-row">
-                                    <td colspan="3" class="px-6 py-4 text-right text-gray-900 font-bold uppercase tracking-widest text-sm print:text-black print:px-0 print:font-bold">TOTAL</td>
-                                    <td class="px-6 py-4 text-right text-2xl text-gray-900 font-black print:text-black print:text-2xl print:px-0">${{ number_format($invoice->total, 2) }}</td>
+                                    <td colspan="2" class="px-6 py-4 text-right text-gray-900 font-bold uppercase tracking-widest text-sm print:text-black print:px-0 print:font-bold">මුදල</td>
+                                    <td class="px-6 py-4 text-right text-2xl text-gray-900 font-black print:text-black print:text-2xl print:px-0">Rs.{{ number_format($invoice->total, 2) }}</td>
                                 </tr>
                             </tfoot>
                         </table>

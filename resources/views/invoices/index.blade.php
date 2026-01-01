@@ -56,7 +56,7 @@
                                                     @endif
                                                 </div>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${{ number_format($invoice->total, 2) }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Rs.{{ number_format($invoice->total, 2) }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                                                 <a href="{{ route('invoices.show', $invoice) }}" class="text-indigo-600 hover:text-indigo-900">View</a>
                                                 <a href="{{ route('invoices.edit', $invoice) }}" class="text-yellow-600 hover:text-yellow-900">Edit</a>
