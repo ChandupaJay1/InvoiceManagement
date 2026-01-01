@@ -9,6 +9,10 @@
 
         <!-- Favicon -->
         <link rel="icon" type="image/png" href="{{ asset('icon.png') }}">
+        
+        <!-- PWA -->
+        <link rel="manifest" href="{{ asset('manifest.json') }}">
+        <meta name="theme-color" content="#4f46e5">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,5 +59,18 @@
                 <span class="font-semibold">&copy; {{ date('Y') }} NerdTech Labs. All rights reserved.</span>
             </div>
         </div>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register("{{ asset('sw.js') }}")
+                        .then(registration => {
+                            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        })
+                        .catch(err => {
+                            console.log('ServiceWorker registration failed: ', err);
+                        });
+                });
+            }
+        </script>
     </body>
 </html>
