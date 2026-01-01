@@ -222,7 +222,7 @@
                         <span class="text-xl font-bold text-gray-800">Invoice Manager</span>
                     </div>
                     <div class="text-sm text-gray-500">
-                        &copy; {{ date('Y') }} <a href="https://nerdtech.site" class="hover:text-indigo-600">NerdTech</a>. All rights reserved.
+                        &copy; {{ date('Y') }} <a href="https://www.facebook.com/nerdtechlabs/" class="hover:text-indigo-600">NerdTech Labs</a>. All rights reserved.
                     </div>
                 </div>
             </div>

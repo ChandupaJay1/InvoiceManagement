@@ -52,7 +52,7 @@
             
             <div class="mt-8 px-6 py-2 glass-effect rounded-full shadow-lg text-gray-800 text-sm flex items-center justify-center gap-2 transform transition-transform hover:scale-105 duration-300">
                 <img src="{{ asset('logo_tp.png') }}" alt="Logo" class="h-6 w-auto" />
-                <span class="font-semibold">&copy; {{ date('Y') }} NerdTech. All rights reserved.</span>
+                <span class="font-semibold">&copy; {{ date('Y') }} NerdTech Labs. All rights reserved.</span>
             </div>
         </div>
     </body>
