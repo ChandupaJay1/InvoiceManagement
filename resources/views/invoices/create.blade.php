@@ -136,7 +136,6 @@
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">කඩ අංකය</th>
                                             {{-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th> --}}
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">මිල</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">මුළු මුදල</th>
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"></th>
                                         </tr>
                                     </thead>
@@ -145,7 +144,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr class="bg-gray-50 font-bold">
-                                            <td colspan="2" class="px-6 py-4 text-right">මුදල:</td>
+                                            <td class="px-6 py-4 text-right">මුදල:</td>
                                             <td class="px-6 py-4">Rs.<span id="totalAmount">0.00</span></td>
                                             <td></td>
                                         </tr>
@@ -234,7 +233,6 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <input type="number" name="items[${rowIndex}][price]" value="0" min="0" step="0.01" required class="w-32 rounded-md border-gray-300" onchange="calculateTotal()">
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">$<span class="subtotal">0.00</span></td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button type="button" onclick="toggleStole(${stoleId})" class="text-red-600 hover:text-red-900">Remove</button>
                 </td>
@@ -250,7 +248,7 @@
                 // const qty = parseFloat(row.querySelector('input[name*="[quantity]"]').value) || 0;
                 const price = parseFloat(row.querySelector('input[name*="[price]"]').value) || 0;
                 const subtotal = price; // qty assumed 1
-                row.querySelector('.subtotal').textContent = subtotal.toFixed(2);
+                // row.querySelector('.subtotal').textContent = subtotal.toFixed(2); // Removed
                 total += subtotal;
             });
             document.getElementById('totalAmount').textContent = total.toFixed(2);

@@ -33,6 +33,95 @@
                 </div>
             </div>
 
+            <!-- Stole Status Overview -->
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 mb-6">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Stole Status Overview</h3>
+                            <p class="text-sm text-gray-500 mt-1">Real-time visualization of all 100 stoles</p>
+                        </div>
+                        <div class="flex items-center gap-4 text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="inline-block w-4 h-4 rounded bg-white border-2 border-gray-300"></span>
+                                <span class="text-gray-600">Paid ({{ count($takenStoles) }})</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="inline-block w-4 h-4 rounded bg-gray-600"></span>
+                                <span class="text-gray-600">Available ({{ 100 - count($takenStoles) }})</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Two Column Layout: Grid Left, Stats Right (Responsive) -->
+                    <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start" x-data="{ page: 1 }">
+                        <!-- Left Side: Stole Grid -->
+                        <div class="w-full lg:w-auto flex-shrink-0 flex justify-center">
+                            <div class="bg-gray-800 p-4 sm:p-6 rounded-xl inline-block">
+                                <!-- Pagination Controls -->
+                                <div class="flex justify-center gap-2 mb-4">
+                                    <button 
+                                        type="button" 
+                                        @click="page = 1" 
+                                        :class="page === 1 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" 
+                                        class="px-4 py-2 rounded-lg text-xs font-bold transition-colors"
+                                    >
+                                        1 - 50
+                                    </button>
+                                    <button 
+                                        type="button" 
+                                        @click="page = 2" 
+                                        :class="page === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" 
+                                        class="px-4 py-2 rounded-lg text-xs font-bold transition-colors"
+                                    >
+                                        51 - 100
+                                    </button>
+                                </div>
+
+                                <!-- Stole Grid -->
+                                <div class="grid gap-2" style="grid-template-columns: repeat(5, 2.5rem); grid-auto-rows: 2.5rem;">
+                                    @for ($i = 1; $i <= 100; $i++)
+                                        @php
+                                            $isPaid = in_array($i, $takenStoles);
+                                        @endphp
+                                        <div 
+                                            x-show="(page === 1 && {{ $i }} <= 50) || (page === 2 && {{ $i }} > 50)"
+                                            class="flex items-center justify-center text-xs font-bold rounded-lg transition-all duration-200
+                                                {{ $isPaid 
+                                                    ? 'bg-white text-gray-800 shadow-md hover:scale-105' 
+                                                    : 'bg-gray-600 text-gray-400 hover:bg-gray-500' 
+                                                }}"
+                                            title="{{ $isPaid ? 'Stole ' . $i . ' - Paid' : 'Stole ' . $i . ' - Available' }}"
+                                        >
+                                            {{ $i }}
+                                        </div>
+                                    @endfor
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vertical Separator (Desktop Only) -->
+                        <div class="hidden lg:block w-px bg-gray-300 self-stretch"></div>
+
+                        <!-- Right Side: Statistics Cards -->
+                        <div class="w-full lg:flex-1 flex flex-col gap-4">
+                            <div class="bg-green-50 rounded-lg p-6 border border-green-200">
+                                <div class="text-4xl font-bold text-green-600 mb-2">{{ count($takenStoles) }}</div>
+                                <div class="text-sm text-gray-600 uppercase tracking-wide">Paid Stoles</div>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                                <div class="text-4xl font-bold text-gray-600 mb-2">{{ 100 - count($takenStoles) }}</div>
+                                <div class="text-sm text-gray-600 uppercase tracking-wide">Available Stoles</div>
+                            </div>
+                            <div class="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
+                                <div class="text-4xl font-bold text-indigo-600 mb-2">{{ count($takenStoles) > 0 ? round((count($takenStoles) / 100) * 100) : 0 }}%</div>
+                                <div class="text-sm text-gray-600 uppercase tracking-wide">Occupancy Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-lg font-bold mb-6">Quick Actions</h3>

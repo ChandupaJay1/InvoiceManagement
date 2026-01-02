@@ -18,8 +18,13 @@ class AdminController extends Controller
         $totalStoles = \App\Models\InvoiceItem::count();
         $totalCapacity = 100;
         $totalCollection = Invoice::sum('total');
+        
+        // Get all currently taken stoles
+        $takenStoles = \App\Models\InvoiceItem::pluck('place')->map(function($place) {
+            return (int) $place;
+        })->unique()->sort()->values()->toArray();
 
-        return view('admin.dashboard', compact('totalUsers', 'totalInvoices', 'totalStoles', 'totalCapacity', 'totalCollection'));
+        return view('admin.dashboard', compact('totalUsers', 'totalInvoices', 'totalStoles', 'totalCapacity', 'totalCollection', 'takenStoles'));
     }
 
     public function collections()
@@ -279,6 +284,10 @@ class AdminController extends Controller
 
         if ($request->has('user_id') && $request->user_id) {
             $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->has('date') && $request->date) {
+            $query->whereDate('invoice_date', $request->date);
         }
 
         $invoices = $query->latest()->paginate(20);

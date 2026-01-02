@@ -108,9 +108,10 @@
                     <!-- Thermal Receipt Header -->
                     <div class="receipt-header mb-8">
                         <h2 class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-2 print:hidden">Receipt Preview</h2>
-                        <h1 class="text-3xl font-extrabold text-gray-900 print:text-[#000]" style="border: none; margin-bottom: 1mm;">INVOICE DETAILS</h1>
+                        <h1 class="text-3xl font-extrabold text-gray-900 print:text-[#000]" style="border: none; margin-bottom: 1mm;">සති පොල කිරිදිවෙල Invoice</h1>
                         <p class="text-xl font-bold text-indigo-600 print:text-[#000]" style="margin-bottom: 1mm;">{{ $invoice->invoice_number }}</p>
-                        <p class="text-gray-500 print:text-[#000]" style="font-size: 11pt; margin-bottom: 4mm;">{{ $invoice->invoice_date->format('F d, Y') }}</p>
+                        <p class="text-gray-500 print:text-[#000]" style="font-size: 11pt; margin-bottom: 1mm;">{{ $invoice->created_at->format('F d, Y h:i A') }}</p>
+                        <p class="text-gray-500 print:text-[#000]" style="font-size: 10pt; margin-bottom: 4mm;">Issued by: {{ $invoice->user->name }}</p>
                         <div class="hidden print:block receipt-divider"></div>
                     </div>
 
@@ -127,7 +128,8 @@
                                 </p>
                                 <!-- Secondary info for print as per user image -->
                                 <div class="hidden print:block pt-4">
-                                    <p class="text-sm">{{ $invoice->invoice_date->format('M d, Y') }}</p>
+                                    <p class="text-sm">{{ $invoice->created_at->format('d/m/Y h:i A') }}</p>
+                                    <p class="text-xs">Issued by: {{ $invoice->user->name }}</p>
                                     <p class="text-sm font-bold border-b border-gray-100 pb-1">{{ $invoice->invoice_number }}</p>
                                 </div>
                             </div>
@@ -137,11 +139,15 @@
                             <div class="space-y-3">
                                 <p class="text-gray-600">
                                     <span class="font-bold">DATE:</span>
-                                    <span>{{ $invoice->invoice_date->format('M d, Y') }}</span>
+                                    <span>{{ $invoice->created_at->format('M d, Y h:i A') }}</span>
                                 </p>
                                 <p class="text-gray-600">
                                     <span class="font-bold">INV #:</span>
                                     <span class="font-bold text-indigo-600">{{ $invoice->invoice_number }}</span>
+                                </p>
+                                <p class="text-gray-600">
+                                    <span class="font-bold">ISSUED BY:</span>
+                                    <span>{{ $invoice->user->name }}</span>
                                 </p>
                             </div>
                         </div>
@@ -157,7 +163,6 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase print:text-black print:px-0">කඩ අංකය</th>
                                     {{-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase print:text-black print:px-0 print:text-center">QTY</th> --}}
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase print:text-black print:px-0">මිල</th>
-                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase print:text-black print:px-0">මුදල</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 print:divide-y-0">
@@ -165,16 +170,15 @@
                                     <tr class="print:border-b print:border-dashed print:border-gray-800">
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 print:px-0 print:text-xs">Stole {{ $item->place }}</td>
                                         {{-- <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 print:px-0 print:text-xs print:text-center">{{ $item->quantity }}</td> --}}
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right font-medium print:px-0 print:text-xs">${{ number_format($item->price, 2) }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right font-bold print:px-0 print:text-xs">${{ number_format($item->subtotal, 2) }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-right font-medium print:px-0 print:text-xs">Rs.{{ number_format($item->price, 2) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
                                 <!-- Subtotal & Tax Row -->
                                 <tr class="bg-indigo-50/50 print:bg-white border-t border-indigo-100 print:border-t-0">
-                                    <td colspan="2" class="px-6 py-2 text-right text-gray-500 uppercase tracking-widest text-[10px] print:text-gray-500 print:px-0 print:font-bold">මුළු මුදල</td>
-                                    <td class="px-6 py-2 text-right text-sm font-bold text-gray-900 print:text-black print:px-0">${{ number_format($invoice->total, 2) }}</td>
+                                    <td class="px-6 py-2 text-right text-gray-500 uppercase tracking-widest text-[10px] print:text-gray-500 print:px-0 print:font-bold">මුළු මුදල</td>
+                                    <td class="px-6 py-2 text-right text-sm font-bold text-gray-900 print:text-black print:px-0">Rs.{{ number_format($invoice->total, 2) }}</td>
                                 </tr>
                                 <!-- Tax row removed as requested -->
                                 {{-- 
@@ -185,7 +189,7 @@
                                 --}}
                                 <!-- Grand Total Row -->
                                 <tr class="border-t-2 border-gray-900 print:border-black print:border-dashed total-row">
-                                    <td colspan="2" class="px-6 py-4 text-right text-gray-900 font-bold uppercase tracking-widest text-sm print:text-black print:px-0 print:font-bold">මුදල</td>
+                                    <td class="px-6 py-4 text-right text-gray-900 font-bold uppercase tracking-widest text-sm print:text-black print:px-0 print:font-bold">මුදල</td>
                                     <td class="px-6 py-4 text-right text-2xl text-gray-900 font-black print:text-black print:text-2xl print:px-0">Rs.{{ number_format($invoice->total, 2) }}</td>
                                 </tr>
                             </tfoot>
