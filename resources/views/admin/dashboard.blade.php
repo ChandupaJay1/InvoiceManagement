@@ -35,61 +35,69 @@
 
             <!-- Stole Status Overview -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200 mb-6">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-6">
+                <div class="p-4 sm:p-6">
+                    <!-- Header - Responsive -->
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                         <div>
                             <h3 class="text-lg font-bold text-gray-800">Stole Status Overview</h3>
-                            <p class="text-sm text-gray-500 mt-1">Real-time visualization of all 100 stoles</p>
+                            <p class="text-sm text-gray-500 mt-1">Real-time visualization of all 600 stoles (Today's Status)</p>
                         </div>
-                        <div class="flex items-center gap-4 text-sm">
+                        <div class="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm flex-wrap">
                             <div class="flex items-center gap-2">
                                 <span class="inline-block w-4 h-4 rounded bg-white border-2 border-gray-300"></span>
                                 <span class="text-gray-600">Paid ({{ count($takenStoles) }})</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="inline-block w-4 h-4 rounded bg-gray-600"></span>
-                                <span class="text-gray-600">Available ({{ 100 - count($takenStoles) }})</span>
+                                <span class="text-gray-600">Available ({{ 600 - count($takenStoles) }})</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Two Column Layout: Grid Left, Stats Right (Responsive) -->
-                    <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start" x-data="{ page: 1 }">
+                    <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-stretch" x-data="{ page: 1 }">
                         <!-- Left Side: Stole Grid -->
                         <div class="w-full lg:w-auto flex-shrink-0 flex justify-center">
-                            <div class="bg-gray-800 p-4 sm:p-6 rounded-xl inline-block">
-                                <!-- Pagination Controls -->
-                                <div class="flex justify-center gap-2 mb-4">
-                                    <button 
-                                        type="button" 
-                                        @click="page = 1" 
-                                        :class="page === 1 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" 
-                                        class="px-4 py-2 rounded-lg text-xs font-bold transition-colors"
-                                    >
-                                        1 - 50
-                                    </button>
-                                    <button 
-                                        type="button" 
-                                        @click="page = 2" 
-                                        :class="page === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" 
-                                        class="px-4 py-2 rounded-lg text-xs font-bold transition-colors"
-                                    >
-                                        51 - 100
-                                    </button>
+                            <div class="bg-gray-800 p-3 sm:p-4 md:p-6 rounded-xl w-full max-w-md lg:max-w-none">
+                                <!-- Pagination Controls - Touch Friendly -->
+                                <div class="flex gap-1.5 sm:gap-2 mb-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-700" style="scrollbar-width: thin;">
+                                    <button type="button" @click="page = 1" :class="page === 1 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">1-50</button>
+                                    <button type="button" @click="page = 2" :class="page === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">51-100</button>
+                                    <button type="button" @click="page = 3" :class="page === 3 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">101-150</button>
+                                    <button type="button" @click="page = 4" :class="page === 4 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">151-200</button>
+                                    <button type="button" @click="page = 5" :class="page === 5 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">201-250</button>
+                                    <button type="button" @click="page = 6" :class="page === 6 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">251-300</button>
+                                    <button type="button" @click="page = 7" :class="page === 7 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">301-350</button>
+                                    <button type="button" @click="page = 8" :class="page === 8 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">351-400</button>
+                                    <button type="button" @click="page = 9" :class="page === 9 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">401-450</button>
+                                    <button type="button" @click="page = 10" :class="page === 10 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">451-500</button>
+                                    <button type="button" @click="page = 11" :class="page === 11 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">501-550</button>
+                                    <button type="button" @click="page = 12" :class="page === 12 ? 'bg-indigo-600 text-white' : 'bg-gray-600 text-gray-300 hover:bg-gray-500'" class="px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors whitespace-nowrap flex-shrink-0 min-w-[60px] sm:min-w-[70px]">551-600</button>
                                 </div>
 
-                                <!-- Stole Grid -->
-                                <div class="grid gap-2" style="grid-template-columns: repeat(5, 2.5rem); grid-auto-rows: 2.5rem;">
-                                    @for ($i = 1; $i <= 100; $i++)
+                                <!-- Stole Grid - Responsive -->
+                                <div class="grid gap-1.5 sm:gap-2 justify-center" style="grid-template-columns: repeat(auto-fit, minmax(2.25rem, 2.75rem)); max-width: 100%;">
+                                    @for ($i = 1; $i <= 600; $i++)
                                         @php
                                             $isPaid = in_array($i, $takenStoles);
                                         @endphp
                                         <div 
-                                            x-show="(page === 1 && {{ $i }} <= 50) || (page === 2 && {{ $i }} > 50)"
-                                            class="flex items-center justify-center text-xs font-bold rounded-lg transition-all duration-200
+                                            x-show="(page === 1 && {{ $i }} >= 1 && {{ $i }} <= 50) || 
+                                                    (page === 2 && {{ $i }} >= 51 && {{ $i }} <= 100) ||
+                                                    (page === 3 && {{ $i }} >= 101 && {{ $i }} <= 150) ||
+                                                    (page === 4 && {{ $i }} >= 151 && {{ $i }} <= 200) ||
+                                                    (page === 5 && {{ $i }} >= 201 && {{ $i }} <= 250) ||
+                                                    (page === 6 && {{ $i }} >= 251 && {{ $i }} <= 300) ||
+                                                    (page === 7 && {{ $i }} >= 301 && {{ $i }} <= 350) ||
+                                                    (page === 8 && {{ $i }} >= 351 && {{ $i }} <= 400) ||
+                                                    (page === 9 && {{ $i }} >= 401 && {{ $i }} <= 450) ||
+                                                    (page === 10 && {{ $i }} >= 451 && {{ $i }} <= 500) ||
+                                                    (page === 11 && {{ $i }} >= 501 && {{ $i }} <= 550) ||
+                                                    (page === 12 && {{ $i }} >= 551 && {{ $i }} <= 600)"
+                                            class="flex items-center justify-center text-xs sm:text-sm font-bold rounded-lg transition-all duration-200 aspect-square
                                                 {{ $isPaid 
                                                     ? 'bg-white text-gray-800 shadow-md hover:scale-105' 
-                                                    : 'bg-gray-600 text-gray-400 hover:bg-gray-500' 
+                                                    : 'bg-gray-600 text-white hover:bg-gray-500' 
                                                 }}"
                                             title="{{ $isPaid ? 'Stole ' . $i . ' - Paid' : 'Stole ' . $i . ' - Available' }}"
                                         >
@@ -104,18 +112,18 @@
                         <div class="hidden lg:block w-px bg-gray-300 self-stretch"></div>
 
                         <!-- Right Side: Statistics Cards -->
-                        <div class="w-full lg:flex-1 flex flex-col gap-4">
-                            <div class="bg-green-50 rounded-lg p-6 border border-green-200">
-                                <div class="text-4xl font-bold text-green-600 mb-2">{{ count($takenStoles) }}</div>
-                                <div class="text-sm text-gray-600 uppercase tracking-wide">Paid Stoles</div>
+                        <div class="w-full lg:flex-1 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-4">
+                            <div class="bg-green-50 rounded-lg p-4 sm:p-6 border border-green-200">
+                                <div class="text-3xl sm:text-4xl font-bold text-green-600 mb-2">{{ count($takenStoles) }}</div>
+                                <div class="text-xs sm:text-sm text-gray-600 uppercase tracking-wide">Paid Stoles</div>
                             </div>
-                            <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                                <div class="text-4xl font-bold text-gray-600 mb-2">{{ 100 - count($takenStoles) }}</div>
-                                <div class="text-sm text-gray-600 uppercase tracking-wide">Available Stoles</div>
+                            <div class="bg-gray-50 rounded-lg p-4 sm:p-6 border border-gray-200">
+                                <div class="text-3xl sm:text-4xl font-bold text-gray-600 mb-2">{{ 600 - count($takenStoles) }}</div>
+                                <div class="text-xs sm:text-sm text-gray-600 uppercase tracking-wide">Available Stoles</div>
                             </div>
-                            <div class="bg-indigo-50 rounded-lg p-6 border border-indigo-200">
-                                <div class="text-4xl font-bold text-indigo-600 mb-2">{{ count($takenStoles) > 0 ? round((count($takenStoles) / 100) * 100) : 0 }}%</div>
-                                <div class="text-sm text-gray-600 uppercase tracking-wide">Occupancy Rate</div>
+                            <div class="bg-indigo-50 rounded-lg p-4 sm:p-6 border border-indigo-200">
+                                <div class="text-3xl sm:text-4xl font-bold text-indigo-600 mb-2">{{ count($takenStoles) > 0 ? round((count($takenStoles) / 600) * 100) : 0 }}%</div>
+                                <div class="text-xs sm:text-sm text-gray-600 uppercase tracking-wide">Occupancy Rate</div>
                             </div>
                         </div>
                     </div>

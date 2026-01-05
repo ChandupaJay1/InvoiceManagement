@@ -16,11 +16,13 @@ class AdminController extends Controller
         $totalUsers = User::count();
         $totalInvoices = Invoice::count();
         $totalStoles = \App\Models\InvoiceItem::count();
-        $totalCapacity = 100;
+        $totalCapacity = 600;
         $totalCollection = Invoice::sum('total');
         
-        // Get all currently taken stoles
-        $takenStoles = \App\Models\InvoiceItem::pluck('place')->map(function($place) {
+        // Get stoles taken TODAY only (for daily reset)
+        $takenStoles = \App\Models\InvoiceItem::whereHas('invoice', function($query) {
+            $query->whereDate('invoice_date', today());
+        })->pluck('place')->map(function($place) {
             return (int) $place;
         })->unique()->sort()->values()->toArray();
 
