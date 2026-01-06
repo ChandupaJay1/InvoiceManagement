@@ -20,8 +20,8 @@
                             </div>
 
                             <div>
-                                <label for="customer_contact" class="block font-medium text-sm text-gray-700">Contact (දුරකථන අංකය)*</label>
-                                <input type="text" name="customer_contact" id="customer_contact" value="{{ old('customer_contact') }}" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                <label for="customer_contact" class="block font-medium text-sm text-gray-700">Contact (දුරකථන අංකය)</label>
+                                <input type="text" name="customer_contact" id="customer_contact" value="{{ old('customer_contact') }}" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                             </div>
 
                             <div>
@@ -72,18 +72,29 @@
                                      style="display: none; width: 480px;">
                                     
                                     <div class="flex justify-between items-center mb-4 border-b pb-2">
-                                        <h4 class="font-bold text-gray-800">Select Stoles (1-100)</h4>
+                                        <h4 class="font-bold text-gray-800">Select Stoles (1-600)</h4>
                                         <button type="button" @click="open = false" class="text-gray-400 hover:text-gray-600">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                         </button>
                                     </div>
 
                                     <div class="overflow-y-auto max-h-[320px] p-1" style="display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px;">
-                                        @for ($i = 1; $i <= 100; $i++)
+                                        @for ($i = 1; $i <= 600; $i++)
                                             @php $isTaken = in_array((string)$i, $takenStoles); @endphp
                                             <button type="button" 
                                                     id="stole-btn-{{ $i }}" 
-                                                    x-show="(page === 1 && {{ $i }} <= 50) || (page === 2 && {{ $i }} > 50)"
+                                                    x-show="(page === 1 && {{ $i }} >= 1 && {{ $i }} <= 50) || 
+                                                            (page === 2 && {{ $i }} >= 51 && {{ $i }} <= 100) ||
+                                                            (page === 3 && {{ $i }} >= 101 && {{ $i }} <= 150) ||
+                                                            (page === 4 && {{ $i }} >= 151 && {{ $i }} <= 200) ||
+                                                            (page === 5 && {{ $i }} >= 201 && {{ $i }} <= 250) ||
+                                                            (page === 6 && {{ $i }} >= 251 && {{ $i }} <= 300) ||
+                                                            (page === 7 && {{ $i }} >= 301 && {{ $i }} <= 350) ||
+                                                            (page === 8 && {{ $i }} >= 351 && {{ $i }} <= 400) ||
+                                                            (page === 9 && {{ $i }} >= 401 && {{ $i }} <= 450) ||
+                                                            (page === 10 && {{ $i }} >= 451 && {{ $i }} <= 500) ||
+                                                            (page === 11 && {{ $i }} >= 501 && {{ $i }} <= 550) ||
+                                                            (page === 12 && {{ $i }} >= 551 && {{ $i }} <= 600)"
                                                     @click="toggle({{ $i }})"
                                                     {{ $isTaken ? 'disabled' : '' }}
                                                     class="w-10 h-10 flex items-center justify-center text-sm font-bold rounded-lg transition-all duration-200 border"
@@ -98,9 +109,19 @@
                                     </div>
 
                                     <!-- Pagination Controls -->
-                                    <div class="mt-4 flex justify-center gap-2 border-t pt-3">
-                                        <button type="button" @click="page = 1" :class="page === 1 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">1 - 50</button>
-                                        <button type="button" @click="page = 2" :class="page === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">51 - 100</button>
+                                    <div class="mt-4 flex justify-center gap-2 border-t pt-3 flex-wrap">
+                                        <button type="button" @click="page = 1" :class="page === 1 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">1-50</button>
+                                        <button type="button" @click="page = 2" :class="page === 2 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">51-100</button>
+                                        <button type="button" @click="page = 3" :class="page === 3 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">101-150</button>
+                                        <button type="button" @click="page = 4" :class="page === 4 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">151-200</button>
+                                        <button type="button" @click="page = 5" :class="page === 5 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">201-250</button>
+                                        <button type="button" @click="page = 6" :class="page === 6 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">251-300</button>
+                                        <button type="button" @click="page = 7" :class="page === 7 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">301-350</button>
+                                        <button type="button" @click="page = 8" :class="page === 8 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">351-400</button>
+                                        <button type="button" @click="page = 9" :class="page === 9 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">401-450</button>
+                                        <button type="button" @click="page = 10" :class="page === 10 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">451-500</button>
+                                        <button type="button" @click="page = 11" :class="page === 11 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">501-550</button>
+                                        <button type="button" @click="page = 12" :class="page === 12 ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700'" class="px-3 py-1 rounded text-xs font-bold transition-colors">551-600</button>
                                     </div>
 
                                     <div class="mt-4 pt-4 border-t flex justify-between items-center">
@@ -136,7 +157,6 @@
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">කඩ අංකය</th>
                                             {{-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th> --}}
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">මිල</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">මුළු මුදල</th>
                                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"></th>
                                         </tr>
                                     </thead>
@@ -145,7 +165,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr class="bg-gray-50 font-bold">
-                                            <td colspan="2" class="px-6 py-4 text-right">මුදල:</td>
+                                            <td class="px-6 py-4 text-right">මුදල:</td>
                                             <td class="px-6 py-4">Rs.<span id="totalAmount">0.00</span></td>
                                             <td></td>
                                         </tr>
@@ -177,7 +197,7 @@
                 const response = await fetch(`{{ route('invoices.stoles.taken') }}?date=${date}`);
                 takenStoles = (await response.json()).map(s => String(s));
                 
-                for (let i = 1; i <= 100; i++) {
+                for (let i = 1; i <= 600; i++) {
                     const btn = document.getElementById(`stole-btn-${i}`);
                     const isTaken = takenStoles.includes(String(i));
                     const isSelected = selectedStoles.has(i);
@@ -234,7 +254,6 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <input type="number" name="items[${rowIndex}][price]" value="0" min="0" step="0.01" required class="w-32 rounded-md border-gray-300" onchange="calculateTotal()">
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">$<span class="subtotal">0.00</span></td>
                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button type="button" onclick="toggleStole(${stoleId})" class="text-red-600 hover:text-red-900">Remove</button>
                 </td>
@@ -250,7 +269,7 @@
                 // const qty = parseFloat(row.querySelector('input[name*="[quantity]"]').value) || 0;
                 const price = parseFloat(row.querySelector('input[name*="[price]"]').value) || 0;
                 const subtotal = price; // qty assumed 1
-                row.querySelector('.subtotal').textContent = subtotal.toFixed(2);
+                // row.querySelector('.subtotal').textContent = subtotal.toFixed(2); // Removed
                 total += subtotal;
             });
             document.getElementById('totalAmount').textContent = total.toFixed(2);

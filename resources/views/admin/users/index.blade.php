@@ -47,8 +47,8 @@
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Disabled</span>
                                             @endif
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-indigo-600">
-                                            ${{ number_format($user->invoices_sum_total ?? 0, 2) }}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-indigo-600 font-bold">
+                                            Rs.{{ number_format($user->invoices->sum('total'), 2) }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                             @if(!$user->is_admin)

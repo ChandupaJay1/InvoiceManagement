@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit');
     Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update');
     Route::get('/invoices/stoles/taken', [InvoiceController::class, 'getTakenStoles'])->name('invoices.stoles.taken');
+    Route::get('/invoices/{invoice}/print-raw', [InvoiceController::class, 'printRaw'])->name('invoices.print_raw');
     Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
 
     // Admin Routes

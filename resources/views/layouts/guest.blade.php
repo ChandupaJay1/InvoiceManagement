@@ -8,11 +8,9 @@
         <title>{{ config('app.name', 'InvoiceManagement') }}</title>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/png" href="{{ asset('icon.png') }}">
+        <link rel="icon" type="image/png" href="{{ asset('logo-ico.png') }}">
         
-        <!-- PWA -->
-        <link rel="manifest" href="{{ asset('manifest.json') }}">
-        <meta name="theme-color" content="#4f46e5">
+
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,10 +44,11 @@
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-animated">
             <div class="w-full sm:max-w-md mt-6 px-8 py-8 glass-effect shadow-2xl overflow-hidden sm:rounded-2xl transform transition-all hover:scale-[1.01] duration-300">
-                <div class="flex justify-center mb-6">
+                <div class="flex flex-col items-center justify-center mb-6">
                     <a href="/" class="transition-transform duration-300 hover:scale-110">
-                        <img src="{{ asset('icon.png') }}" alt="Application Logo" class="w-24 h-24" />
+                        <img src="{{ asset('logo-ico.png') }}" alt="Application Logo" class="w-24 h-24" />
                     </a>
+                    <h1 class="text-xl font-bold tracking-wider text-gray-800 mt-2 uppercase">SAGAKI ALL IN ONE</h1>
                 </div>
                 {{ $slot }}
             </div>
@@ -59,18 +58,6 @@
                 <span class="font-semibold">&copy; {{ date('Y') }} NerdTech Labs. All rights reserved.</span>
             </div>
         </div>
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register("{{ asset('sw.js') }}")
-                        .then(registration => {
-                            console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                        })
-                        .catch(err => {
-                            console.log('ServiceWorker registration failed: ', err);
-                        });
-                });
-            }
-        </script>
+
     </body>
 </html>
