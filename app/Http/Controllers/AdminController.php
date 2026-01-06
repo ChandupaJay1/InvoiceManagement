@@ -15,7 +15,9 @@ class AdminController extends Controller
     {
         $totalUsers = User::count();
         $totalInvoices = Invoice::count();
-        $totalStoles = \App\Models\InvoiceItem::count();
+        $totalStoles = \App\Models\InvoiceItem::whereHas('invoice', function($query) {
+            $query->whereDate('invoice_date', today());
+        })->count();
         $totalCapacity = 600;
         $totalCollection = Invoice::sum('total');
         

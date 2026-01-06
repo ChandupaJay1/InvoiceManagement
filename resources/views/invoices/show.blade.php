@@ -100,6 +100,10 @@
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 00-2 2h2m24 0v-5a2 2 0 012-2h10a2 2 0 012 2v5m-14 0h14"></path></svg>
                     Print Receipt
                 </button>
+                <a href="my.bluetoothprint.scheme://{{ route('invoices.print_raw', $invoice) }}" style="background-color: #2563EB;" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 transition ease-in-out duration-150 shadow-sm print:hidden">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                    Print via App
+                </a>
                 <a href="{{ route('invoices.edit', $invoice) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 transition ease-in-out duration-150 shadow-sm print:hidden">
                     Edit Invoice
                 </a>
@@ -125,14 +129,14 @@
                     <!-- Invoice Info -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 border-b border-gray-100 pb-8 print:border-b-0 print:mb-2 print:pb-0">
                         <div class="print:mb-4">
-                            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4 print:hidden">Customer</h3>
-                            <span class="hidden print:block label-mini">CUSTOMER:</span>
+                            <div class="mb-4 print:mb-2">
+                                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 print:hidden">Bill To</h3>
+                                <p class="text-lg font-bold text-gray-900 print:text-sm print:text-black"><span class="print:font-bold">Name:</span> {{ $invoice->customer_name }}</p>
+                                {{-- @if($invoice->customer_contact)
+                                    <p class="text-sm text-gray-600 print:text-xs print:text-black">{{ $invoice->customer_contact }}</p>
+                                @endif --}}
+                            </div>
                             <div class="space-y-3 print:space-y-0">
-                                <p class="text-lg font-bold text-gray-800 print:text-sm print:leading-tight">{{ $invoice->customer_name }}</p>
-                                <p class="text-gray-600 flex items-center print:text-sm print:leading-tight">
-                                    <svg class="w-4 h-4 mr-2 print:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                                    {{ $invoice->customer_contact }}
-                                </p>
                                 <!-- Secondary info for print as per user image -->
                                 <div class="hidden print:block pt-4">
                                     <p class="text-sm">{{ $invoice->created_at->format('d/m/Y h:i A') }}</p>

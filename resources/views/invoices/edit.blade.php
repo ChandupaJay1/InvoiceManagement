@@ -21,8 +21,8 @@
                             </div>
 
                             <div>
-                                <label for="customer_contact" class="block font-medium text-sm text-gray-700">Contact*</label>
-                                <input type="text" name="customer_contact" id="customer_contact" value="{{ old('customer_contact', $invoice->customer_contact) }}" required class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                <label for="customer_contact" class="block font-medium text-sm text-gray-700">Contact</label>
+                                <input type="text" name="customer_contact" id="customer_contact" value="{{ old('customer_contact', $invoice->customer_contact) }}" class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                             </div>
 
                             <div>

@@ -40,7 +40,7 @@ class InvoiceController extends Controller
     {
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
-            'customer_contact' => 'required|string|max:255',
+            'customer_contact' => 'nullable|string|max:255',
             'invoice_date' => 'required|date',
             'items' => 'required|array|min:1',
             'items.*.place' => [
@@ -79,8 +79,8 @@ class InvoiceController extends Controller
             $invoice = Invoice::create([
                 'user_id' => Auth::id(),
                 'invoice_number' => Invoice::generateInvoiceNumber(),
-                'customer_name' => $validated['customer_name'],
-                'customer_contact' => $validated['customer_contact'],
+                'customer_name' => $validated['customer_name'] ?? 'Guest',
+                'customer_contact' => $validated['customer_contact'] ?? '',
                 'invoice_date' => $validated['invoice_date'],
                 'stoles' => $stoleNumbers,
                 'total' => $total,
@@ -165,7 +165,7 @@ class InvoiceController extends Controller
 
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
-            'customer_contact' => 'required|string|max:255',
+            'customer_contact' => 'nullable|string|max:255',
             'invoice_date' => 'required|date',
             'items' => 'required|array|min:1',
             'items.*.place' => [
@@ -203,8 +203,8 @@ class InvoiceController extends Controller
 
             // Update invoice
             $invoice->update([
-                'customer_name' => $validated['customer_name'],
-                'customer_contact' => $validated['customer_contact'],
+                'customer_name' => $validated['customer_name'] ?? 'Guest',
+                'customer_contact' => $validated['customer_contact'] ?? '',
                 'invoice_date' => $validated['invoice_date'],
                 'stoles' => $stoleNumbers,
                 'total' => $total,
@@ -252,4 +252,61 @@ class InvoiceController extends Controller
             ->with('success', 'Invoice deleted successfully!');
     }
 
+
+    public function printRaw(Invoice $invoice)
+    {
+        // JSON Format for Mate Bluetooth Print App
+        // [
+        //   {"content": "Text", "align": 0-2, "bold": 0-1, "format": 0-3},
+        //   ...
+        // ]
+        // Align: 0=Left, 1=Center, 2=Right
+        // Bold: 0=No, 1=Yes
+        // Format: 0=Normal, 1=Double Height, 2=Double Height+Width, 3=Double Width
+        
+        $data = [];
+        
+        // Header
+        $data[] = ['content' => "ALL WEEKLY FAIR - KIRINDIWELA\n", 'align' => 1, 'bold' => 1, 'format' => 1];
+        $data[] = ['content' => "(Tenderer Wimal Fish Stall)\n\n", 'align' => 1, 'bold' => 0, 'format' => 0];
+        
+        // Invoice Info
+        $data[] = ['content' => "INV NO: " . $invoice->invoice_number . "\n", 'align' => 0, 'bold' => 0, 'format' => 0];
+        $data[] = ['content' => "DATE: " . $invoice->created_at->format('d/m/Y h:i A') . "\n", 'align' => 0, 'bold' => 0, 'format' => 0];
+        $data[] = ['content' => "ISSUED BY: " . $invoice->user->name . "\n", 'align' => 0, 'bold' => 0, 'format' => 0];
+        $data[] = ['content' => "CUSTOMER: " . $invoice->customer_name . "\n", 'align' => 0, 'bold' => 0, 'format' => 0];
+        
+        $data[] = ['content' => "--------------------------------\n", 'align' => 1, 'bold' => 1, 'format' => 0];
+        
+        // Items Header
+        $data[] = ['content' => "ITEM                       PRICE\n", 'align' => 0, 'bold' => 1, 'format' => 0];
+        $data[] = ['content' => "--------------------------------\n", 'align' => 1, 'bold' => 1, 'format' => 0];
+        
+        // Items
+        foreach ($invoice->items as $item) {
+            $name = "Stole " . $item->place;
+            $price = number_format($item->price, 2);
+            
+            // Manual padding for alignment since we can't fully control tab stops in simple JSON lines
+            // Assuming simplified view where each content object is a line or block
+            $padding = 32 - strlen($name) - strlen($price);
+            if ($padding < 1) $padding = 1;
+            $spaces = str_repeat(" ", $padding);
+            
+            $data[] = ['content' => $name . $spaces . $price . "\n", 'align' => 0, 'bold' => 0, 'format' => 0];
+        }
+        
+        $data[] = ['content' => "--------------------------------\n", 'align' => 1, 'bold' => 1, 'format' => 0];
+        
+        // Total
+        $totalLine = "TOTAL: Rs." . number_format($invoice->total, 2) . "\n\n";
+        $data[] = ['content' => $totalLine, 'align' => 2, 'bold' => 1, 'format' => 0]; // Double width might break alignment with fixed font so stick to normal/bold
+        
+        // Footer
+        $data[] = ['content' => "Thank You!\n", 'align' => 1, 'bold' => 1, 'format' => 0];
+        $data[] = ['content' => "Software By Tharadi Piyasa\n", 'align' => 1, 'bold' => 0, 'format' => 0];
+        $data[] = ['content' => "071*******\n\n\n", 'align' => 1, 'bold' => 0, 'format' => 0]; 
+        
+        return response()->json($data);
+    }
 }
